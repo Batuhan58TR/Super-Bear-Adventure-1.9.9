@@ -1,0 +1,118 @@
+can-sandbox.html
+<!DOCTYPE html><html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Can Sandbox – Yükseltmeli</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: #020617;
+      padding: 20px;
+      border-radius: 14px;
+      width: 360px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
+    }
+    h1 { text-align: center; margin-bottom: 12px; }
+    .stat { text-align: center; font-size: 18px; margin: 6px 0; }
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 10px;
+      background: #3b82f6;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    button:disabled { background: #475569; cursor: not-allowed; }
+    button:hover:not(:disabled) { background: #2563eb; }
+    .small { font-size: 12px; opacity: 0.7; text-align: center; margin-top: 8px; }
+    hr { border: none; border-top: 1px solid #1e293b; margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>❤️ Can Sandbox</h1><div class="stat">Can: <b id="hp">100</b></div>
+<div class="stat">Saniyede Can: <b id="hps">0</b></div>
+<div class="stat">Tık Başına Can: <b id="hpc">4</b></div>
+
+<button onclick="clickHp()">+ Can (Tıkla)</button>
+
+<hr />
+
+<button onclick="buyClickUpgrade()" id="clickBtn">Tık Gücü +1<br>(Bedel: <span id="clickCost">50</span> Can)</button>
+<button onclick="buyIdleUpgrade()" id="idleBtn">Saniyede Can +1<br>(Bedel: <span id="idleCost">100</span> Can)</button>
+
+<div class="small">Her yükseltmede bedel %5 artar</div>
+
+  </div>  <script>
+    let hp = 100;
+    let hpPerClick = 4;
+    let hpPerSecond = 0;
+
+    let clickCost = 50;
+    let idleCost = 100;
+
+    function update() {
+      document.getElementById('hp').textContent = format(hp);
+      document.getElementById('hps').textContent = format(hpPerSecond);
+      document.getElementById('hpc').textContent = format(hpPerClick);
+      document.getElementById('clickCost').textContent = format(clickCost);
+      document.getElementById('idleCost').textContent = format(idleCost);
+
+      document.getElementById('clickBtn').disabled = hp < clickCost;
+      document.getElementById('idleBtn').disabled = hp < idleCost;
+    }
+
+    function clickHp() {
+      hp += hpPerClick;
+      update();
+    }
+
+    function buyClickUpgrade() {
+      if (hp >= clickCost) {
+        hp -= clickCost;
+        // her yükseltmede artış gücü %10 artsın
+        const inc = Math.max(1, Math.ceil(hpPerClick * 0.10));
+        hpPerClick += inc;
+        clickCost = Math.ceil(clickCost * 1.05);
+        update();
+      }
+    }
+
+    function buyIdleUpgrade() {
+      if (hp >= idleCost) {
+        hp -= idleCost;
+        // her yükseltmede artış gücü %10 artsın
+        const inc = Math.max(1, Math.ceil(hpPerSecond * 0.10) || 1);
+        hpPerSecond += inc;
+        idleCost = Math.ceil(idleCost * 1.05);
+        update();
+      }
+    }
+
+    function format(n) {
+      if (!Number.isFinite(n)) return String(n);
+      if (n >= 1e6) return n.toExponential(2);
+      return Math.floor(n).toString();
+    }
+
+    setInterval(() => {
+      hp += hpPerSecond;
+      update();
+    }, 1000);
+
+    update();
+  </script></body>
+</html>
